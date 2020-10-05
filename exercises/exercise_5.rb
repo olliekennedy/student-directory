@@ -29,8 +29,7 @@ def input_students
 end
 
 def instantiate_student
-  student = Hash.new(name: "", cohort: nil, hobbies: [],
-                    country_of_birth: "", height: nil)
+  student = Hash.new
   puts "Please enter a name:"
   name = gets.chomp.capitalize
   return nil if name == ""
@@ -52,15 +51,15 @@ end
 
 def print(students)
   students.each do |student|
-    puts "#{student[:name]} (#{student[:cohort].to_s} cohort).
-          Hobbies are: #{student[:hobbies].join(", ")}.
-          Country of birth is #{student[:country_of_birth]}.
-          Height is #{student[:height]}cm."
+    puts "#{student[:name]} (#{student[:cohort].to_s} cohort)
+          Hobbies are: #{student[:hobbies].join(", ")}
+          Country of birth is: #{student[:country_of_birth]}
+          Height is: #{student[:height]}cm"
   end
 end
 
 def print_footer(students)
-  puts "Overall, we have #{students.count} great students"
+  puts students.count > 0 ? "Overall, we have #{students.count} great student#{students.count > 1 ? "s" : ""}" : "We have no students"
 end
 
 students = input_students

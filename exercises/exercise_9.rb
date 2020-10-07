@@ -40,7 +40,7 @@ def print(students)
 end
 
 def print_footer(students)
-  puts students.count > 0 ? "Overall, we have #{students.count} great student#{students.count > 1 ? "s" : ""}" : "We have no students"
+  puts students.count > 0 ? "Overall, we have #{students.count} great student#{"s" if students.count > 1}" : "We have no students"
 end
 
 students = input_students

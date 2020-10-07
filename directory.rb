@@ -2,8 +2,20 @@ require 'date'
 
 @students = []
 
-def load_students
-  file = File.open("students.csv", "r")
+def try_load_students
+  filename = ARGV.first
+  return if filename.nil?
+  if File.exists?(filename)
+    load_students(filename)
+    puts "Loaded #{@students.count} students from #{filename}"
+  else
+    puts "Sorry, #{filename} doesn't exist - please try again"
+    exit
+  end
+end
+
+def load_students(filename = "students.csv")
+  file = File.open(filename, "r")
   file.readlines.each do |line|
     name, cohort = line.split(",")
     @students << { name: name, cohort: cohort.to_sym }
@@ -23,11 +35,11 @@ end
 def input_students
   puts "Please enter the names of the students"
   puts "To finish, just hit return twice"
-  name = gets.chomp
+  name = STDIN.gets.chomp
   while !name.empty? do
     @students << { name: name.capitalize, cohort: get_cohort.to_sym }
     puts "Now we have #{@students.count} students"
-    name = gets.chomp
+    name = STDIN.gets.chomp
   end
   @students
 end
@@ -36,7 +48,7 @@ def get_cohort
   cohort = ""
   while true do
     puts "Which cohort are they in?"
-    cohort = gets.chomp.downcase
+    cohort = STDIN.gets.chomp.downcase
     if valid_month?(cohort)
       break
     else
@@ -115,9 +127,10 @@ end
 def interactive_menu
   while true do
     print_menu
-    process(gets.chomp)
+    process(STDIN.gets.chomp)
   end
 end
 
+try_load_students
 interactive_menu
 # print_in_cohorts(students)

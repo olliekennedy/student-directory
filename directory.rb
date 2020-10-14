@@ -14,13 +14,28 @@ def try_load_students
   end
 end
 
+def add_to_students(name, cohort)
+  @students << { name: name.capitalize, cohort: cohort.to_sym }
+end
+
 def load_students(filename = "students.csv")
   file = File.open(filename, "r")
   file.readlines.each do |line|
     name, cohort = line.split(",")
-    @students << { name: name, cohort: cohort.to_sym }
+    add_to_students(name, cohort)
   end
   file.close
+  puts "......students loaded"
+end
+
+def input_students
+  puts "Please enter the names of the students\nTo finish, just hit return twice"
+  while true do
+    name = STDIN.gets.chomp
+    break if name == ""
+    add_to_students(name, get_cohort)
+    puts "Now we have #{@students.count} students"
+  end
 end
 
 def save_students
@@ -32,29 +47,12 @@ def save_students
   puts "Students saved to file"
 end
 
-def input_students
-  puts "Please enter the names of the students"
-  puts "To finish, just hit return twice"
-  name = STDIN.gets.chomp
-  while !name.empty? do
-    @students << { name: name.capitalize, cohort: get_cohort.to_sym }
-    puts "Now we have #{@students.count} students"
-    name = STDIN.gets.chomp
-  end
-  @students
-end
-
 def get_cohort
   cohort = ""
   while true do
     puts "Which cohort are they in?"
     cohort = STDIN.gets.chomp.downcase
-    if valid_month?(cohort)
-      break
-    else
-      puts "Not a valid cohort - try a full month"
-    end
-    #valid_month?(cohort) ? break : puts "Not a valid cohort - try a full month"
+    puts valid_month?(cohort) ? break : "Not a valid cohort - try a full month"
   end
   cohort
 end
@@ -64,8 +62,7 @@ def valid_month?(str)
 end
 
 def print_header
-  puts "The students of Villains Academy"
-  puts "-------------"
+  puts "The students of Villains Academy\n-------------"
 end
 
 def print_students_list
@@ -82,9 +79,7 @@ def print_students_in_cohorts
   cohorts.uniq!
   cohorts.each do |cohort|
     @students.each do |student|
-      if student[:cohort] == cohort
-        puts "#{student[:name]} (#{student[:cohort]} cohort)"
-      end
+      puts "#{student[:name]} (#{student[:cohort]} cohort)" if student[:cohort] == cohort
     end
   end
 end
@@ -94,11 +89,14 @@ def print_footer
 end
 
 def print_menu
-  puts "1. Input the students"
-  puts "2. Show the students"
-  puts "3. Save the list to students.csv"
-  puts "4. Load the list from students.csv"
-  puts "9. Exit"
+  menu_options = ["1. Input the students",
+                  "2. Show the students",
+                  "3. Save the list to students.csv",
+                  "4. Load the list from students.csv",
+                  "9. Exit"]
+  menu_options.each do |x|
+    puts x
+  end
 end
 
 def show_students
@@ -109,18 +107,12 @@ end
 
 def process(selection)
   case selection
-    when "1"
-      @students = input_students
-    when "2"
-      show_students
-    when "3"
-      save_students
-    when "4"
-      load_students
-    when "9"
-      exit
-    else
-      puts "I don't know what you meant, try again"
+    when "1" then input_students
+    when "2" then show_students
+    when "3" then save_students
+    when "4" then load_students
+    when "9" then exit
+    else puts "I don't know what you meant, try again"
   end
 end
 
